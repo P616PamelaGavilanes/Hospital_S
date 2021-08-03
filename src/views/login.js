@@ -2,17 +2,31 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import { Link } from 'react-router-dom';
+import request from "superagent";
+const url = "http://localhost:8080/api/v1/centros";
 class LoginPag extends React.Component{
     
     constructor ( props){
     super(props);
-    this.state = {value: 'Quito'};
+    this.state = {value: '1',
+        data:[],
+    };
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
      }
      handleChange(event) {this.setState({value: event.target.value});}
       handleSubmit(event) { event.preventDefault(); }
-
+    peticionGet=()=>{
+        request.get(url).end((err, res) => {
+            const users = JSON.parse(res.text);
+            this.setState({data: users});
+            console.log(this.state.data);
+        });
+    }
+    componentDidMount() {
+        this.peticionGet();
+    }
 render(){
 
     return(
@@ -62,9 +76,9 @@ render(){
                                       <label> Sucursal :
                                     <br></br> <br></br> 
                                         <select value={this.state.value} onChange={this.handleChange} className="browser-default custom-select">
-                                          <option value="Quito">Quito</option>
-                                          <option value="Cuenca">Cuenca</option>
-                                          <option value="Guayaquil">Guayaquil</option>
+                                            {this.state.data.map(ele =>(
+                                                <option key = {ele.id} value={ele.id}>{ele.nombre}</option>
+                                            ))}
                                         </select>
                                        </label>
                                     <br></br> <br></br> <br></br>
@@ -72,10 +86,7 @@ render(){
                                             <div class="row">
                                                 <div class="col-3"> Accion: </div>
                                                 <div class="col-3">
-                                                {this.state.value === "Quito"?<Link className= 'btn btn-primary' to={`/inicio/${this.state.value}`}>Iniciar</Link>:null}
-                                                {this.state.value === "Cuenca"?<Link className= 'btn btn-primary' to={`/inicio/${this.state.value}`}>Iniciar</Link>:null}
-                                                {this.state.value === "Guayaquil"?<Link className= 'btn btn-primary' to={`/inicio/${this.state.value}`}>Iniciar</Link>:null}
-
+                                                {this.state.value !=null ?<Link className= 'btn btn-primary' to={`/inicio/${this.state.value}`}>Iniciar</Link>:null}
                                                 </div>
                                             </div>
                                             </div>

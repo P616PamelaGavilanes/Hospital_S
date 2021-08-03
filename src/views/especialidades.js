@@ -1,5 +1,7 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from "axios";
+const url1 = 'http://localhost:8080/api/v1/';
 class TablasM extends React.Component{
     constructor (
        props
@@ -7,10 +9,18 @@ class TablasM extends React.Component{
         super(props);
         this.state={
             id: this.props.match.params.id,
-            datos:[],
-            clima:[],
-            tempe:[],
+            medicos:[],
+            ciudades:[],
+            especialidades:[],
         }
+    }
+    peticionGet=()=>{
+        axios.get(url1.concat('centros/').concat(this.state.id).concat('/show')).then(response=>{this.setState({ciudades: response.data});console.log(this.state.ciudades);}).catch(error=>{console.log(error.message);})
+        axios.get(url1.concat('/medicos')).then(response=>{this.setState({medicos: response.data});console.log(this.state.medicos);}).catch(error=>{console.log(error.message);})
+        axios.get(url1.concat('/especialidades')).then(response=>{this.setState({especialidades: response.data});console.log(this.state.especialidades);}).catch(error=>{console.log(error.message);})
+    }
+    componentDidMount() {
+        this.peticionGet();
     }
   render(){
     return(
@@ -22,7 +32,7 @@ class TablasM extends React.Component{
 
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Helse Hospital - {this.state.id}</a>
+            <a class="navbar-brand" href="/">Helse Hospital - {this.state.ciudades.nombre}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -54,86 +64,58 @@ class TablasM extends React.Component{
         <br></br><br></br>
         <div class="container">
         <div class="row">
-            <div class="col"><h1>Información</h1></div> <br/><br/><br/>
+            <div class="col"><h1>Información </h1></div> <br/><br/><br/>
             <main class="container pt-5">
                 <div class="card mb-5">
-                    <div class="card-header">Fearures</div>
+                    <div class="card-header">Especialidades</div>
                     <div class="card-block p-0">
                         <table class="table table-bordered table-sm m-0">
                             <thead class="">
                                 <tr>
                                     <th>#</th>
-                                    <th>Name</th>
-                                    <th>Registration Date</th>
-                                    <th>E-mail address</th>
-                                    <th>Premium Plan</th>
+                                    <th>Tema</th>
+                                    <th>Descripcion</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input"/>
-                                            <span class="custom-control-indicator"></span>
-                                        </label>
-                                    </td>
-                                    <td>John Lilki</td>
-                                    <td>September 14, 2013</td>
-                                    <td>jhlilk22@yahoo.com</td>
-                                    <td>No</td>
-                                </tr>
-                            
-                               
+                            {this.state.especialidades.map((consulta, i) => {
+                                return(
+                                    <tr>
+                                        <td>{consulta.id}</td>
+                                        <td>{consulta.nombre}</td>
+                                        <td>{consulta.descripcion}</td>
+                                    </tr>
+                                );
+                            })}
                             </tbody>
                         </table>
                     </div>
-                    <div class="card-footer p-0">
-                        <nav aria-label="...">
-                            <ul class="pagination justify-content-end mt-3 mr-3">
-                                <li class="page-item disabled">
-                                    <span class="page-link">Previous</span>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item active">
-                                    <span class="page-link">2<span class="sr-only">(current)</span>
-                                    </span>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">Next</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+
                 </div>
                 <div class="card mb-5">
-                    <div class="card-header">Fearures</div>
+                    <div class="card-header">Personal General</div>
                     <div class="card-block p-0">
                         <table class="table table-bordered table-sm m-0">
                             <thead class="">
                                 <tr>
                                     <th>#</th>
-                                    <th>Name</th>
-                                    <th>Registration Date</th>
-                                    <th>E-mail address</th>
-                                    <th>Premium Plan</th>
+                                    <th>Nombre</th>
+                                    <th>Dirección</th>
+                                    <th>Experiencia</th>
+                                    <th>Función</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input"/>
-                                            <span class="custom-control-indicator"></span>
-                                        </label>
-                                    </td>
-                                    <td>John Lilki</td>
-                                    <td>September 14, 2013</td>
-                                    <td>jhlilk22@yahoo.com</td>
-                                    <td>No</td>
-                                </tr>
-                            
-                               
+                            <tbody>{this.state.medicos.map((consulta, i) => {
+                                return(
+                                    <tr>
+                                        <td>{consulta.id}</td>
+                                        <td>{consulta.empleadoByIdEmpleado.nombre}</td>
+                                        <td>{consulta.empleadoByIdEmpleado.direccion}</td>
+                                        <td>{consulta.experiencia}</td>
+                                        <td>{consulta.funcion}</td>
+                                    </tr>
+                                );
+                            })}
                             </tbody>
                         </table>
                     </div>
@@ -161,46 +143,50 @@ class TablasM extends React.Component{
             </div>
         </div>
         <br></br><br></br>
-        <footer class="text-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3 col-lg-4 col-xl-3">
-                    <h5>About</h5>
-                    <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25"></hr>
-                    <p class="mb-0">
-                        Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression.
-                    </p>
-                </div>
+            <footer className="text-light">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-3 col-lg-4 col-xl-3">
+                            <h5>Sobre nosotros</h5>
+                            <hr className="bg-white mb-2 mt-0 d-inline-block mx-auto w-25"></hr>
+                            <p className="mb-0">
+                                Sucursal : {this.state.ciudades.nombre} <br/>
+                                Ubicacion: {this.state.ciudades.direccion}
+                            </p>
+                        </div>
 
-                <div class="col-md-2 col-lg-2 col-xl-2 mx-auto">
-                    <h5>Integrantes</h5>
-                    <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25"></hr>
-                    <ul class="list-unstyled">
-                        <li>Pamela Gavilanes</li>
-                        <li>LA</li>
-                        <li>DC</li>
-                        <li>VC</li>
-                    </ul>
+                        <div className="col-md-2 col-lg-2 col-xl-2 mx-auto">
+                            <h5>Integrantes</h5>
+                            <hr className="bg-white mb-2 mt-0 d-inline-block mx-auto w-25"></hr>
+                            <ul className="list-unstyled">
+                                <li>Pamela Gavilanes</li>
+                                <li>LA</li>
+                                <li>DC</li>
+                                <li>VC</li>
+                            </ul>
+                        </div>
+                        <div className="col-md-4 col-lg-3 col-xl-3">
+                            <h5>Contact</h5>
+                            <hr className="bg-white mb-2 mt-0 d-inline-block mx-auto w-25"></hr>
+                            <ul className="list-unstyled">
+                                <li><i className="fa fa-home mr-2"></i> Aplicaciones Distribuidas</li>
+                                <li><i className="fa fa-envelope mr-2"></i> Sucursal{this.state.ciudades.direccion}@gmail.com
+                                </li>
+                                <li><i className="fa fa-phone mr-2"></i> {this.state.ciudades.telefono}</li>
+                                <li><i className="fa fa-print mr-2"></i> + 33 12 14 15 16</li>
+                            </ul>
+                        </div>
+                        <div className="col-12 copyright mt-3">
+                            <p className="float-left">
+                                <a href="/">Iniciar</a>
+                            </p>
+                            <p className="text-right text-muted">Creado por <i className="fa fa-heart">PG</i> by <a
+                                href="https://t-php.fr/43-theme-ecommerce-bootstrap-4.html"><i>PG</i></a> | <span>v. 1.0</span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4 col-lg-3 col-xl-3">
-                    <h5>Contact</h5>
-                    <hr class="bg-white mb-2 mt-0 d-inline-block mx-auto w-25"></hr>
-                    <ul class="list-unstyled">
-                        <li><i class="fa fa-home mr-2"></i> My company</li>
-                        <li><i class="fa fa-envelope mr-2"></i> email@example.com</li>
-                        <li><i class="fa fa-phone mr-2"></i> + 33 12 14 15 16</li>
-                        <li><i class="fa fa-print mr-2"></i> + 33 12 14 15 16</li>
-                    </ul>
-                </div>
-                <div class="col-12 copyright mt-3">
-                    <p class="float-left">
-                        <a href="/">Back to top</a>
-                    </p>
-                    <p class="text-right text-muted">Creado por <i class="fa fa-heart"></i> by <a href="https://t-php.fr/43-theme-ecommerce-bootstrap-4.html"><i>PG</i></a> | <span>v. 1.0</span></p>
-                </div>
-            </div>
-        </div>
-        </footer>
+            </footer>
 </div>
     );
   }
