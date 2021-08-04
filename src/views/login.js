@@ -8,14 +8,14 @@ class LoginPag extends React.Component{
     
     constructor ( props){
     super(props);
-    this.state = {value: '1',
+    this.state = {value: '5',
         data:[],
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
      }
-     handleChange(event) {this.setState({value: event.target.value});}
+     handleChange(event) {this.setState({value: '5'});}
       handleSubmit(event) { event.preventDefault(); }
     peticionGet=()=>{
         request.get(url).end((err, res) => {
@@ -75,9 +75,9 @@ render(){
                                     <form  onSubmit={this.handleSubmit}>
                                       <label> Sucursal :
                                     <br></br> <br></br> 
-                                        <select value={this.state.value} onChange={this.handleChange} className="browser-default custom-select">
+                                        <select value={this.state.value} disabled onChange={this.handleChange} className="browser-default custom-select">
                                             {this.state.data.map(ele =>(
-                                                <option key = {ele.id} value={ele.id}>{ele.nombre}</option>
+                                                <option key = {ele.id} value={ele.id} >{ele.nombre}</option>
                                             ))}
                                         </select>
                                        </label>
